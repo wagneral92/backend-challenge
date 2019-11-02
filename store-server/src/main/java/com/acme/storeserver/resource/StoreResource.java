@@ -3,7 +3,9 @@ package com.acme.storeserver.resource;
 import com.acme.storeserver.model.Store;
 import com.acme.storeserver.service.StoreService;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,13 +65,15 @@ public class StoreResource {
         return ResponseEntity.ok(optionalStore.get());
     }
 
-    /***
+    /**
      *
-     * @param pageable
+     * @param page
+     * @param size
      * @return
      */
     @GetMapping
-    public ResponseEntity<Page<Store>> getAll(final Pageable pageable) {
-        return ResponseEntity.ok(this.service.findAll(pageable));
+    public ResponseEntity<Page<Store>> getAll(@RequestParam(value = "page", required = false, defaultValue = "0") final int page,
+                                              @RequestParam(value = "size",required = false, defaultValue = "10") final int size) {
+        return ResponseEntity.ok(this.service.findAll(PageRequest.of(page, size)));
     }
 }
