@@ -8,3 +8,12 @@ services:
        - D:\Projetos\data:/var/lib/mysql
       environment:
         - MYSQL_ROOT_PASSWORD=admin
+   rabbit:
+      image: "rabbitmq:management"
+      container_name: rabbitmq
+      environment:
+        RABBITMQ_DEFAULT_USER: "rabbitmq"
+        RABBITMQ_DEFAULT_PASS: "rabbitmq"
+      ports:
+        - "15672:15672"
+        - "5672:5672"

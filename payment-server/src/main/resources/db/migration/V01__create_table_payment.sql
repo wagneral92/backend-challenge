@@ -1,5 +1,6 @@
 CREATE TABLE payment(
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    order_id BIGINT NOT NULL,
     cred_card_number VARCHAR(25) NOT NULL,
     date_payment TIMESTAMP NOT NULL,
     status VARCHAR(60) NOT NULL

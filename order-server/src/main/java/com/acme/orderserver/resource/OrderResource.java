@@ -22,7 +22,6 @@ public class OrderResource {
 
     private final OrderService service;
 
-    @Autowired
     private final MessageSource messageSource;
 
     @Autowired

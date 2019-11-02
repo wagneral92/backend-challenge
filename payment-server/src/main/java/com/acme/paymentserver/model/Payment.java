@@ -21,6 +21,9 @@ public class Payment implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "order_id")
+    private Long orderId;
+
     @NotNull
     @Size(min = 14, max = 16)
     @Column(name = "cred_card_number")
