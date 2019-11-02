@@ -8,11 +8,11 @@ import java.util.Optional;
 
 public interface IStoreService {
 
-    Store create(Store store);
+    Store create(final Store store);
 
-    Store update(Store store, Long id);
+    Store update(final Store store, final Long id);
 
-    Optional<Store> findById(Long id);
+    Optional<Store> findById(final Long id);
 
-    Page<Store> findAll(Pageable pageable);
+    Page<Store> findAll(final Pageable pageable);
 }

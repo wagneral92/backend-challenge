@@ -20,13 +20,24 @@ public class StoreResource {
         this.service = service;
     }
 
+    /**
+     *
+     * @param store
+     * @return
+     */
     @PostMapping
-    public ResponseEntity<Store> create(@RequestBody @Valid Store store) {
+    public ResponseEntity<Store> create(@RequestBody @Valid final Store store) {
         return ResponseEntity.ok(this.service.create(store));
     }
 
+    /**
+     *
+     * @param store
+     * @param id
+     * @return
+     */
     @PutMapping("{id}")
-    public ResponseEntity<Store> update(@RequestBody @Valid Store store, @PathVariable Long id) {
+    public ResponseEntity<Store> update(@RequestBody @Valid Store store, @PathVariable final Long id) {
 
         if (!this.service.findById(id).isPresent()) {
             return ResponseEntity.noContent().build();
@@ -35,8 +46,13 @@ public class StoreResource {
         return ResponseEntity.ok(this.service.update(store, id));
     }
 
+    /**
+     *
+     * @param id
+     * @return
+     */
     @GetMapping("{id}")
-    public ResponseEntity<Store> getId(@PathVariable Long id) {
+    public ResponseEntity<Store> getId(@PathVariable final Long id) {
 
         Optional<Store> optionalStore = this.service.findById(id);
 
@@ -47,8 +63,13 @@ public class StoreResource {
         return ResponseEntity.ok(optionalStore.get());
     }
 
+    /***
+     *
+     * @param pageable
+     * @return
+     */
     @GetMapping
-    public ResponseEntity<Page<Store>> getAll(Pageable pageable) {
+    public ResponseEntity<Page<Store>> getAll(final Pageable pageable) {
         return ResponseEntity.ok(this.service.findAll(pageable));
     }
 }

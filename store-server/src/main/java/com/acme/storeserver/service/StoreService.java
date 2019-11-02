@@ -15,39 +15,64 @@ public class StoreService implements IStoreService {
 
     private final StoreRepository repository;
 
+    /**
+     *
+     * @param repository
+     */
     @Autowired
     public StoreService(StoreRepository repository) {
         this.repository = repository;
     }
 
+    /**
+     *
+     * @param store
+     * @return
+     */
     @Override
-    public Store create(Store store) {
+    public Store create(final Store store) {
         return repository.save(store);
     }
 
+    /**
+     *
+     * @param store
+     * @param id
+     * @return
+     */
     @Override
-    public Store update(Store store, Long id) {
+    public Store update(final Store store, final Long id) {
         Optional<Store> optionalStore = repository.findById(id);
 
-        if(optionalStore.isPresent()){
-           Store storeBase = optionalStore.get();
+        if (optionalStore.isPresent()) {
+            Store storeBase = optionalStore.get();
 
-           storeBase.setName(store.getName());
-           storeBase.setAddress(store.getAddress());
+            storeBase.setName(store.getName());
+            storeBase.setAddress(store.getAddress());
 
-           return repository.save(storeBase);
+            return repository.save(storeBase);
         }
 
         return null;
     }
 
+    /**
+     *
+     * @param id
+     * @return
+     */
     @Override
-    public Optional<Store> findById(Long id) {
+    public Optional<Store> findById(final Long id) {
         return repository.findById(id);
     }
 
+    /**
+     *
+     * @param pageable
+     * @return
+     */
     @Override
-    public Page<Store> findAll(Pageable pageable) {
+    public Page<Store> findAll(final Pageable pageable) {
         return repository.findAll(pageable);
     }
 }
