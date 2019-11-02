@@ -1,6 +1,6 @@
-package com.acme.paymentserver.event;
+package com.acme.orderserver.event;
 
-import com.acme.paymentserver.queue.model.Command;
+import com.acme.orderserver.queue.model.Command;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 

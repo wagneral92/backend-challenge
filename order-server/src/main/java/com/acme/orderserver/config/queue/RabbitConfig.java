@@ -1,20 +1,22 @@
-package com.acme.paymentserver.config.queue;
+package com.acme.orderserver.config.queue;
 
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
-import org.springframework.amqp.core.*;
 import org.springframework.context.annotation.Configuration;
+
 
 @Configuration
 public class RabbitConfig {
 
     public static final String FINALIZE_ORDER = "finalize-order";
+    public static final String FINALIZE_PAYMENT = "finalize-payment";
 
     @Bean
-    Queue finalizeOrderQueue(){
-        return QueueBuilder.durable(FINALIZE_ORDER).build();
+    Queue finalizePaymentQueue(){
+        return QueueBuilder.durable(FINALIZE_PAYMENT).build();
     }
 
     @Bean

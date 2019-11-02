@@ -1,10 +1,13 @@
 package com.acme.paymentserver.queue.model;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 @Builder
 @Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 public class FinalizeOrderCommand extends Command{
 
     private Long paymentId;

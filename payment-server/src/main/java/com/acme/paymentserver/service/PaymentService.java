@@ -1,5 +1,6 @@
 package com.acme.paymentserver.service;
 
+import com.acme.paymentserver.config.queue.RabbitConfig;
 import com.acme.paymentserver.dto.ResponseMessageDTO;
 import com.acme.paymentserver.event.QueueSenderEvent;
 import com.acme.paymentserver.exception.OrderNotFoundException;
@@ -64,7 +65,8 @@ public class PaymentService implements IPaymentService {
                     FinalizeOrderCommand.builder()
                             .paymentId(payment.getId())
                             .orderId(payment.getOrderId())
-                            .build()
+                            .build(),
+                    RabbitConfig.FINALIZE_ORDER
             ));
 
             return ResponseMessageDTO.builder().message(this.messageSource.getMessage("payment.created", null, LocaleContextHolder.getLocale())).build();

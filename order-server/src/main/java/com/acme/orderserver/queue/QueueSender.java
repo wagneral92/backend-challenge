@@ -1,7 +1,6 @@
-package com.acme.paymentserver.queue;
+package com.acme.orderserver.queue;
 
-import com.acme.paymentserver.config.queue.RabbitConfig;
-import com.acme.paymentserver.queue.model.Command;
+import com.acme.orderserver.queue.model.Command;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,7 +15,7 @@ public class QueueSender {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public void send(Command command, String queue) {
+    public void send(final Command command, final String queue) {
         rabbitTemplate.convertAndSend(queue, command);
     }
 }

@@ -1,6 +1,7 @@
 package com.acme.orderserver.service.contracts;
 
 import com.acme.orderserver.model.Order;
+import com.acme.orderserver.queue.model.FinalizeOrderCommand;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -15,4 +16,6 @@ public interface IOrderService {
     Optional<Order> findById(final Long id);
 
     Page<Order> findAll(final Pageable pageable);
+
+    void finalizeOrder(final FinalizeOrderCommand command);
 }

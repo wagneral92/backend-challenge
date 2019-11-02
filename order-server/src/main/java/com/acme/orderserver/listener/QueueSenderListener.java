@@ -1,7 +1,7 @@
-package com.acme.paymentserver.listener;
+package com.acme.orderserver.listener;
 
-import com.acme.paymentserver.event.QueueSenderEvent;
-import com.acme.paymentserver.queue.QueueSender;
+import com.acme.orderserver.event.QueueSenderEvent;
+import com.acme.orderserver.queue.QueueSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
