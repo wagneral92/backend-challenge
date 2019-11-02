@@ -1,4 +1,4 @@
-package com.acme.orderserver.config.resTemplateConfig;
+package com.acme.orderserver.config.resTemplate;
 
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.netflix.ribbon.RibbonClient;

@@ -1,4 +1,4 @@
-package com.acme.orderserver.config.resTemplateConfig;
+package com.acme.orderserver.config.resTemplate;
 
 import com.netflix.client.config.IClientConfig;
 import com.netflix.loadbalancer.IPing;
@@ -16,8 +16,6 @@ public class RibbonConfig {
         return new NoOpPing();
 
     }
-
-
 
     @Bean
     public IRule ribbonRule(IClientConfig config) {

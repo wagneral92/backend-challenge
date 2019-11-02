@@ -1,0 +1,7 @@
+CREATE TABLE payment(
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    cred_card_number VARCHAR(25) NOT NULL,
+    date_payment TIMESTAMP NOT NULL,
+    status VARCHAR(60) NOT NULL
+
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
