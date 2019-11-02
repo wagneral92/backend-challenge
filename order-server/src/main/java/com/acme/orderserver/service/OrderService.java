@@ -2,18 +2,18 @@ package com.acme.orderserver.service;
 
 import com.acme.orderserver.exception.StoreNotFoundException;
 import com.acme.orderserver.model.Order;
+import com.acme.orderserver.repository.OrderItemRepository;
 import com.acme.orderserver.repository.OrderRepository;
 import com.acme.orderserver.service.contracts.IOrderService;
 import com.acme.orderserver.serviceAgents.StoreService;
 import com.acme.orderserver.serviceAgents.model.Store;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+
+import javax.transaction.Transactional;
+
+import static java.util.Objects.isNull;
 
 import java.util.Optional;
 
@@ -21,80 +21,90 @@ import java.util.Optional;
 public class OrderService implements IOrderService {
 
     private final OrderRepository repository;
+    private final OrderItemRepository orderItemRepository;
     private final StoreService storeService;
-    private final RestTemplate restTemplate;
-
-    @Value("${app.toreService.baseUrl}")
-    private String baseUrl;
 
     /**
-     *
      * @param repository
+     * @param orderItemRepository
      * @param storeService
-     * @param restTemplate
      */
-    public OrderService(OrderRepository repository, StoreService storeService, RestTemplate restTemplate) {
+    public OrderService(OrderRepository repository, OrderItemRepository orderItemRepository, StoreService storeService) {
         this.repository = repository;
+        this.orderItemRepository = orderItemRepository;
         this.storeService = storeService;
-        this.restTemplate = restTemplate;
     }
 
     /**
-     *
      * @param order
      * @return
      */
     @Override
     public Order create(final Order order) {
-        ResponseEntity<Store> responseEntity = this.getStoreById(order.getStoreId());
 
-        if (responseEntity.getStatusCode() == HttpStatus.NO_CONTENT) {
-            throw new StoreNotFoundException();
-        }
+        Store store = this.getStoreById(order.getStoreId());
+        order.setStatus(Order.Status.CREATED);
 
         return repository.save(order);
+
     }
 
     /**
-     *
      * @param order
      * @param id
      * @return
      */
     @Override
+    @Transactional
     public Order update(final Order order, final Long id) {
+        Optional<Order> orderOptional = this.repository.findById(id);
+
+        if (orderOptional.isPresent()) {
+            Store store = this.getStoreById(order.getStoreId());
+
+            Order orderBase = orderOptional.get();
+
+            orderBase.setAddress(order.getAddress());
+            orderBase.setStoreId(order.getStoreId());
+            orderBase.getItems().clear();
+            orderBase.getItems().addAll(order.getItems());
+
+            return repository.save(orderBase);
+        }
+
         return null;
     }
 
     /**
-     *
      * @param id
      * @return
      */
     @Override
     public Optional<Order> findById(final Long id) {
-        return Optional.empty();
+        return repository.findById(id);
     }
 
     /**
-     *
      * @param pageable
      * @return
      */
     @Override
     public Page<Order> findAll(final Pageable pageable) {
-        return null;
+        return repository.findAll(pageable);
     }
 
+    /**
+     * @param id
+     * @return
+     */
+    private Store getStoreById(Long id) {
+        Store store = this.storeService.getStoreById(id);
 
-    @HystrixCommand(fallbackMethod = "registerOrderRedis")
-    private ResponseEntity<Store> getStoreById(final Long storeId) {
-        ResponseEntity<Store> responseEntity = this.restTemplate.getForEntity(this.baseUrl + "store/{id}", Store.class, storeId);
+        if (isNull(store)) {
+            throw new StoreNotFoundException();
+        }
 
-        return responseEntity;
+        return store;
     }
 
-    public ResponseEntity<Store> registerOrderRedis(final Long storeId) {
-        return null;
-    }
 }

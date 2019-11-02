@@ -9,7 +9,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseError implements Serializable {
+public class ResponseErrorDTO implements Serializable {
 
     private List<String> erros;
 }

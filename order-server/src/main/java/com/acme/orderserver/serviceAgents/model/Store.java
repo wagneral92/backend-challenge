@@ -1,17 +1,13 @@
 package com.acme.orderserver.serviceAgents.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 
-import java.io.Serializable;
+@Data
+public class Store {
 
-public class Store implements Serializable {
-
-    @JsonProperty("id")
     private Long id;
 
-    @JsonProperty("name")
     private String name;
 
-    @JsonProperty("address")
     private String address;
 }

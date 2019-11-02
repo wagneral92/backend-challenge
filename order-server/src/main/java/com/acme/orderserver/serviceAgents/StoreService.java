@@ -1,22 +1,13 @@
 package com.acme.orderserver.serviceAgents;
 
-import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import com.acme.orderserver.serviceAgents.model.Store;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-@Service
-@Getter
-public class StoreService {
+@FeignClient(name = "store-server")
+public interface StoreService {
 
-    @Value("${app.toreService.baseUrl}")
-    private String baseUrl;
-
-    private final RestTemplate restTemplate;
-
-    @Autowired
-    public StoreService(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-    }
+    @RequestMapping("/store/{id}")
+    Store getStoreById(@PathVariable Long id);
 }
