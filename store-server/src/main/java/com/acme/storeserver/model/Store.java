@@ -3,7 +3,7 @@ package com.acme.storeserver.model;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
@@ -22,11 +22,11 @@ public class Store implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotNull
     @Size(min = 2, max = 200)
     private String name;
 
-    @NotBlank
+    @NotNull
     @Size(min = 2, max = 255)
     private String address;
 }

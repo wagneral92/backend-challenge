@@ -1,11 +1,11 @@
 package com.acme.storeserver.resource;
 
+import com.acme.storeserver.dto.StoreDTO;
 import com.acme.storeserver.model.Store;
 import com.acme.storeserver.service.StoreService;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,9 +17,11 @@ import java.util.Optional;
 public class StoreResource {
 
     private final StoreService service;
+    private final ModelMapper modelMapper;
 
-    public StoreResource(StoreService service) {
+    public StoreResource(StoreService service, ModelMapper modelMapper) {
         this.service = service;
+        this.modelMapper = modelMapper;
     }
 
     /**
@@ -28,8 +30,8 @@ public class StoreResource {
      * @return
      */
     @PostMapping
-    public ResponseEntity<Store> create(@RequestBody @Valid final Store store) {
-        return ResponseEntity.ok(this.service.create(store));
+    public ResponseEntity<Store> create(@RequestBody @Valid final StoreDTO store) {
+        return ResponseEntity.ok(this.service.create(this.modelMapper.map(store, Store.class)));
     }
 
     /**
@@ -39,13 +41,13 @@ public class StoreResource {
      * @return
      */
     @PutMapping("{id}")
-    public ResponseEntity<Store> update(@RequestBody @Valid Store store, @PathVariable final Long id) {
+    public ResponseEntity<Store> update(@RequestBody @Valid final StoreDTO store, @PathVariable final Long id) {
 
         if (!this.service.findById(id).isPresent()) {
             return ResponseEntity.noContent().build();
         }
 
-        return ResponseEntity.ok(this.service.update(store, id));
+        return ResponseEntity.ok(this.service.update(this.modelMapper.map(store, Store.class), id));
     }
 
     /**
