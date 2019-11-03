@@ -30,7 +30,6 @@ public class Order implements Serializable {
     @Size(min = 2, max = 255)
     private String address;
 
-    @JsonFormat(pattern="yyyy-MM-dd")
     @Column(name = "confirmation_date")
     private LocalDateTime confirmationDate;
 

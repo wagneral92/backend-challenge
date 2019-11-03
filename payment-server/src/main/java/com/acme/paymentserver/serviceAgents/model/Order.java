@@ -1,8 +1,9 @@
 package com.acme.paymentserver.serviceAgents.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
@@ -20,6 +21,7 @@ public class Order implements Serializable {
 
     private String address;
 
+    @JsonProperty("confirmationDate")
     private LocalDateTime confirmationDate;
 
     private List<OrderItem> items;
