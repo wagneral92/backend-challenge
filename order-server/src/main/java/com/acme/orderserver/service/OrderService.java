@@ -6,6 +6,7 @@ import com.acme.orderserver.exception.StoreNotFoundException;
 import com.acme.orderserver.model.Order;
 import com.acme.orderserver.queue.model.FinalizeOrderCommand;
 import com.acme.orderserver.queue.model.FinalizePaymentCommand;
+import com.acme.orderserver.queue.model.RevertPaymentCommand;
 import com.acme.orderserver.repository.OrderItemRepository;
 import com.acme.orderserver.repository.OrderRepository;
 import com.acme.orderserver.service.contracts.IOrderService;
@@ -110,22 +111,36 @@ public class OrderService implements IOrderService {
         Optional<Order> optionalOrder = this.repository.findById(command.getOrderId());
 
         if (optionalOrder.isPresent()) {
-            Order baseOrder = optionalOrder.get();
+            try {
+                Order baseOrder = optionalOrder.get();
 
-            baseOrder.setStatus(Order.Status.PAY);
-            baseOrder.setConfirmationDate(LocalDateTime.now());
-            repository.save(baseOrder);
+                baseOrder.setStatus(Order.Status.PAY);
+                baseOrder.setConfirmationDate(LocalDateTime.now());
+                repository.save(new Order());
 
-            this.publisher.publishEvent(
-                    new QueueSenderEvent(
-                            this,
-                            FinalizePaymentCommand.builder()
-                                    .orderId(command.getOrderId())
-                                    .paymentId(command.getPaymentId())
-                                    .build(),
-                            RabbitConfig.FINALIZE_PAYMENT
-                    )
-            );
+                this.publisher.publishEvent(
+                        new QueueSenderEvent(
+                                this,
+                                FinalizePaymentCommand.builder()
+                                        .orderId(command.getOrderId())
+                                        .paymentId(command.getPaymentId())
+                                        .build(),
+                                RabbitConfig.FINALIZE_PAYMENT
+                        )
+                );
+
+            } catch (Exception e) {
+
+                this.publisher.publishEvent(
+                        new QueueSenderEvent(
+                                this,
+                                RevertPaymentCommand.builder()
+                                        .paymentId(command.getPaymentId())
+                                        .build(),
+                                RabbitConfig.REVERT_PAYMENT
+                        )
+                );
+            }
 
         }
 

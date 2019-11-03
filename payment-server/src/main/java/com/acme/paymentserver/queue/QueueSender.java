@@ -1,6 +1,5 @@
 package com.acme.paymentserver.queue;
 
-import com.acme.paymentserver.config.queue.RabbitConfig;
 import com.acme.paymentserver.queue.model.Command;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;

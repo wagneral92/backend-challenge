@@ -6,6 +6,8 @@ import com.acme.paymentserver.event.QueueSenderEvent;
 import com.acme.paymentserver.exception.OrderNotFoundException;
 import com.acme.paymentserver.model.Payment;
 import com.acme.paymentserver.queue.model.FinalizeOrderCommand;
+import com.acme.paymentserver.queue.model.FinalizePaymentCommand;
+import com.acme.paymentserver.queue.model.RevertPaymentCommand;
 import com.acme.paymentserver.repository.PaymentRepository;
 import com.acme.paymentserver.service.contracts.IPaymentService;
 import com.acme.paymentserver.serviceAgents.OrderService;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Objects.isNull;
 
@@ -74,6 +77,30 @@ public class PaymentService implements IPaymentService {
         }
 
         return ResponseMessageDTO.builder().message(this.messageSource.getMessage("payment.exists", null, LocaleContextHolder.getLocale())).build();
+    }
+
+    @Override
+    public void FinalizePayment(FinalizePaymentCommand finalizePaymentCommand) {
+        Optional<Payment> optionalPayment = this.repository.findById(finalizePaymentCommand.getPaymentId());
+
+        if (optionalPayment.isPresent()) {
+            Payment paymentBase = optionalPayment.get();
+
+            paymentBase.setStatus(Payment.Status.COMPLETED);
+            this.repository.save(paymentBase);
+        }
+    }
+
+    @Override
+    public void revertPayment(RevertPaymentCommand revertPaymentCommand) {
+        Optional<Payment> optionalPayment = this.repository.findById(revertPaymentCommand.getPaymentId());
+
+        if (optionalPayment.isPresent()) {
+            Payment paymentBase = optionalPayment.get();
+
+            paymentBase.setStatus(Payment.Status.PENDING);
+            this.repository.save(paymentBase);
+        }
     }
 
     /**

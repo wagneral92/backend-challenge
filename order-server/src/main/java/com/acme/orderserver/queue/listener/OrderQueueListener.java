@@ -9,7 +9,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 @Component
-public class FinalizeOrderQueueListener {
+public class OrderQueueListener {
 
     @Autowired
     private ApplicationEventPublisher publisher;

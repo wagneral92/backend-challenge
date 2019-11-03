@@ -37,6 +37,6 @@ public class Payment implements Serializable {
     private Payment.Status status;
 
     public enum Status {
-        PROCESSING, COMPLETED, REFUNDED
+        PENDING, PROCESSING, COMPLETED, REFUNDED
     }
 }
