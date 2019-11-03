@@ -79,6 +79,10 @@ public class PaymentService implements IPaymentService {
         return ResponseMessageDTO.builder().message(this.messageSource.getMessage("payment.exists", null, LocaleContextHolder.getLocale())).build();
     }
 
+    /**
+     *
+     * @param finalizePaymentCommand
+     */
     @Override
     public void FinalizePayment(FinalizePaymentCommand finalizePaymentCommand) {
         Optional<Payment> optionalPayment = this.repository.findById(finalizePaymentCommand.getPaymentId());
@@ -91,6 +95,10 @@ public class PaymentService implements IPaymentService {
         }
     }
 
+    /**
+     *
+     * @param revertPaymentCommand
+     */
     @Override
     public void revertPayment(RevertPaymentCommand revertPaymentCommand) {
         Optional<Payment> optionalPayment = this.repository.findById(revertPaymentCommand.getPaymentId());

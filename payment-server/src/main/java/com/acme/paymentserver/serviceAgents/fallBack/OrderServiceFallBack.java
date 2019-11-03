@@ -1,6 +1,5 @@
 package com.acme.paymentserver.serviceAgents.fallBack;
 
-import com.acme.paymentserver.exception.OrderNotFoundException;
 import com.acme.paymentserver.serviceAgents.OrderService;
 import com.acme.paymentserver.serviceAgents.model.Order;
 import lombok.AllArgsConstructor;

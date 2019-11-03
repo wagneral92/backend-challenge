@@ -34,6 +34,7 @@ public class Payment implements Serializable {
     private LocalDateTime date;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     private Payment.Status status;
 
     public enum Status {

@@ -11,11 +11,11 @@ public class QueueSender {
     private final RabbitTemplate rabbitTemplate;
 
     @Autowired
-    public QueueSender(RabbitTemplate rabbitTemplate) {
+    public QueueSender(final RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public void send(Command command, String queue) {
+    public void send(final Command command, final String queue) {
         rabbitTemplate.convertAndSend(queue, command);
     }
 }

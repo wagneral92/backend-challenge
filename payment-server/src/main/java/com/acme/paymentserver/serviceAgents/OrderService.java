@@ -10,5 +10,5 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public interface OrderService {
 
     @RequestMapping("/order/{id}")
-    Order getOrderById(@PathVariable Long id);
+    Order getOrderById(@PathVariable final Long id);
 }

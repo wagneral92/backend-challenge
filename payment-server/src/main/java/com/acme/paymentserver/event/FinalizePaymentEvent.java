@@ -15,7 +15,7 @@ public class FinalizePaymentEvent extends ApplicationEvent {
      * @param source the object on which the event initially occurred or with
      *               which the event is associated (never {@code null})
      */
-    public FinalizePaymentEvent(Object source, final FinalizePaymentCommand finalizePaymentCommand) {
+    public FinalizePaymentEvent(final Object source, final FinalizePaymentCommand finalizePaymentCommand) {
         super(source);
         this.finalizePaymentCommand = finalizePaymentCommand;
     }

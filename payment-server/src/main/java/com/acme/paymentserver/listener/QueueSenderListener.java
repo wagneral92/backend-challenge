@@ -13,7 +13,7 @@ public class QueueSenderListener implements ApplicationListener<QueueSenderEvent
     private QueueSender queueSender;
 
     @Override
-    public void onApplicationEvent(QueueSenderEvent event) {
+    public void onApplicationEvent(final QueueSenderEvent event) {
         this.queueSender.send(event.getCommand(), event.getQueue());
     }
 }

@@ -8,6 +8,6 @@ import com.acme.paymentserver.queue.model.RevertPaymentCommand;
 public interface IPaymentService {
 
     ResponseMessageDTO create(final Payment payment);
-    void FinalizePayment(FinalizePaymentCommand finalizePaymentCommand);
-    void revertPayment(RevertPaymentCommand revertPaymentCommand);
+    void FinalizePayment(final FinalizePaymentCommand finalizePaymentCommand);
+    void revertPayment(final RevertPaymentCommand revertPaymentCommand);
 }

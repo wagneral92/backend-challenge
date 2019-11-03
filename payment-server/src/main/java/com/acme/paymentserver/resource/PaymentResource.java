@@ -35,7 +35,7 @@ public class PaymentResource {
     }
 
     @ExceptionHandler({OrderNotFoundException.class})
-    public ResponseEntity<ResponseErrorDTO> handleStoreNotFoundException(OrderNotFoundException ex) {
+    public ResponseEntity<ResponseErrorDTO> handleStoreNotFoundException(final OrderNotFoundException ex) {
         return ResponseEntity.badRequest().body(ResponseErrorDTO.builder().erros(Arrays.asList(this.messageSource.getMessage("payment.order-not-found",null, LocaleContextHolder.getLocale()))).build());
     }
 }

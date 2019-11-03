@@ -15,7 +15,7 @@ public class RevertPaymentEvent extends ApplicationEvent {
      * @param source the object on which the event initially occurred or with
      *               which the event is associated (never {@code null})
      */
-    public RevertPaymentEvent(Object source, final RevertPaymentCommand revertPaymentCommand) {
+    public RevertPaymentEvent(final Object source, final RevertPaymentCommand revertPaymentCommand) {
         super(source);
         this.revertPaymentCommand = revertPaymentCommand;
     }

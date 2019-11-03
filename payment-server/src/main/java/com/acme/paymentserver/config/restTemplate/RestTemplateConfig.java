@@ -1,6 +1,5 @@
 package com.acme.paymentserver.config.restTemplate;
 
-import feign.Contract;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.netflix.ribbon.RibbonClient;
 import org.springframework.context.annotation.Bean;
