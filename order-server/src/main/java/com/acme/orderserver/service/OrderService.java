@@ -116,7 +116,7 @@ public class OrderService implements IOrderService {
 
                 baseOrder.setStatus(Order.Status.PAY);
                 baseOrder.setConfirmationDate(LocalDateTime.now());
-                repository.save(new Order());
+                repository.save(baseOrder);
 
                 this.publisher.publishEvent(
                         new QueueSenderEvent(
