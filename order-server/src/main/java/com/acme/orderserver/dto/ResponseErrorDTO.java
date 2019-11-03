@@ -11,5 +11,5 @@ import java.util.List;
 @NoArgsConstructor
 public class ResponseErrorDTO implements Serializable {
 
-    private List<String> erros;
+    private List<String> errors;
 }

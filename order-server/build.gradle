@@ -30,6 +30,7 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 	compile('org.springframework.cloud:spring-cloud-starter-netflix-hystrix')
 	compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-feign', version: '1.4.7.RELEASE'
+	compile group: 'org.modelmapper', name: 'modelmapper', version: '2.3.2'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'mysql:mysql-connector-java'
 	annotationProcessor 'org.projectlombok:lombok'

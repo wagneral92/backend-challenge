@@ -13,7 +13,7 @@ public class FinalizeOrderListener implements ApplicationListener<FinalizeOrderE
     private OrderService orderService;
 
     @Override
-    public void onApplicationEvent(FinalizeOrderEvent event) {
+    public void onApplicationEvent(final FinalizeOrderEvent event) {
         this.orderService.finalizeOrder(event.getFinalizeOrderCommand());
     }
 }

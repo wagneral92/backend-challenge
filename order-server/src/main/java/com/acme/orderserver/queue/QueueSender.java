@@ -11,7 +11,7 @@ public class QueueSender {
     private final RabbitTemplate rabbitTemplate;
 
     @Autowired
-    public QueueSender(RabbitTemplate rabbitTemplate) {
+    public QueueSender(final RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
     }
 

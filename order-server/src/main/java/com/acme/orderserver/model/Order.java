@@ -3,11 +3,11 @@ package com.acme.orderserver.model;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -35,6 +35,8 @@ public class Order implements Serializable {
     @Column(name = "confirmation_date")
     private LocalDateTime confirmationDate;
 
+    @NotNull
+    @Enumerated(EnumType.STRING)
     private Order.Status status;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

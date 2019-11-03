@@ -32,4 +32,14 @@ public class OrderItem implements Serializable {
 
     @NotNull
     private int quantity;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private OrderItem.Status status;
+
+    public enum Status {
+        CREATED, REFUNDED, PAY
+
+
+    }
 }

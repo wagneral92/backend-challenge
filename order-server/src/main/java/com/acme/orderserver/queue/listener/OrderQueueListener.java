@@ -15,7 +15,7 @@ public class OrderQueueListener {
     private ApplicationEventPublisher publisher;
 
     @RabbitListener(queues = RabbitConfig.FINALIZE_ORDER)
-    public void processOrder(FinalizeOrderCommand command) {
+    public void processOrder(final FinalizeOrderCommand command) {
         this.publisher.publishEvent(
                 new FinalizeOrderEvent(
                         this,

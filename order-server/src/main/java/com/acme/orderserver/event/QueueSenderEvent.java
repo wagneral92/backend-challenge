@@ -18,7 +18,7 @@ public class QueueSenderEvent extends ApplicationEvent {
      * @param source the object on which the event initially occurred or with
      *               which the event is associated (never {@code null})
      */
-    public QueueSenderEvent(Object source, Command command, String queue) {
+    public QueueSenderEvent(final Object source, final Command command, final String queue) {
         super(source);
         this.command = command;
         this.queue = queue;

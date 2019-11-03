@@ -4,6 +4,7 @@ import com.acme.orderserver.config.queue.RabbitConfig;
 import com.acme.orderserver.event.QueueSenderEvent;
 import com.acme.orderserver.exception.StoreNotFoundException;
 import com.acme.orderserver.model.Order;
+import com.acme.orderserver.model.OrderItem;
 import com.acme.orderserver.queue.model.FinalizeOrderCommand;
 import com.acme.orderserver.queue.model.FinalizePaymentCommand;
 import com.acme.orderserver.queue.model.RevertPaymentCommand;
@@ -54,6 +55,7 @@ public class OrderService implements IOrderService {
 
         Store store = this.getStoreById(order.getStoreId());
         order.setStatus(Order.Status.CREATED);
+        order.getItems().stream().forEach(item -> item.setStatus(OrderItem.Status.CREATED));
 
         return this.repository.save(order);
 
@@ -65,7 +67,6 @@ public class OrderService implements IOrderService {
      * @return
      */
     @Override
-    @Transactional
     public Order update(final Order order, final Long id) {
         Optional<Order> orderOptional = this.repository.findById(id);
 
@@ -78,6 +79,7 @@ public class OrderService implements IOrderService {
             orderBase.setStoreId(order.getStoreId());
             orderBase.getItems().clear();
             orderBase.getItems().addAll(order.getItems());
+            orderBase.getItems().stream().forEach(orderItem -> orderItem.setStatus(OrderItem.Status.CREATED));
 
             return this.repository.save(orderBase);
         }
@@ -107,7 +109,7 @@ public class OrderService implements IOrderService {
      * @param command
      */
     @Override
-    public void finalizeOrder(FinalizeOrderCommand command) {
+    public void finalizeOrder(final FinalizeOrderCommand command) {
         Optional<Order> optionalOrder = this.repository.findById(command.getOrderId());
 
         if (optionalOrder.isPresent()) {
@@ -115,6 +117,7 @@ public class OrderService implements IOrderService {
                 Order baseOrder = optionalOrder.get();
 
                 baseOrder.setStatus(Order.Status.PAY);
+                baseOrder.getItems().stream().forEach(item -> item.setStatus(OrderItem.Status.PAY));
                 baseOrder.setConfirmationDate(LocalDateTime.now());
                 repository.save(baseOrder);
 
@@ -151,7 +154,7 @@ public class OrderService implements IOrderService {
      * @param id
      * @return
      */
-    private Store getStoreById(Long id) {
+    private Store getStoreById(final Long id) {
         Store store = this.storeService.getStoreById(id);
 
         if (isNull(store)) {

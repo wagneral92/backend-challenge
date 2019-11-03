@@ -15,7 +15,7 @@ public class FinalizeOrderEvent extends ApplicationEvent {
      * @param source the object on which the event initially occurred or with
      *               which the event is associated (never {@code null})
      */
-    public FinalizeOrderEvent(Object source, FinalizeOrderCommand finalizeOrderCommand) {
+    public FinalizeOrderEvent(final Object source, final FinalizeOrderCommand finalizeOrderCommand) {
         super(source);
         this.finalizeOrderCommand = finalizeOrderCommand;
     }
