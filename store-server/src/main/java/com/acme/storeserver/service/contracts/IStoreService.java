@@ -14,5 +14,5 @@ public interface IStoreService {
 
     Optional<Store> findById(final Long id);
 
-    Page<Store> findAll(final Pageable pageable);
+    Page<Store> findAll(final Pageable pageable, final String search);
 }

@@ -72,7 +72,7 @@ public class StoreService implements IStoreService {
      * @return
      */
     @Override
-    public Page<Store> findAll(final Pageable pageable) {
-        return repository.findAll(pageable);
+    public Page<Store> findAll(final Pageable pageable, final String search) {
+        return repository.findAllSearch(pageable, search);
     }
 }

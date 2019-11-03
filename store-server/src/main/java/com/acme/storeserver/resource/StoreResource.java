@@ -80,7 +80,8 @@ public class StoreResource {
      */
     @GetMapping
     public ResponseEntity<Page<Store>> getAll(@RequestParam(value = "page", required = false, defaultValue = "0") final int page,
-                                              @RequestParam(value = "size",required = false, defaultValue = "10") final int size) {
-        return ResponseEntity.ok(this.service.findAll(PageRequest.of(page, size)));
+                                              @RequestParam(value = "size",required = false, defaultValue = "10") final int size,
+                                              @RequestParam(value = "search",required = false, defaultValue = "") final String search) {
+        return ResponseEntity.ok(this.service.findAll(PageRequest.of(page, size), search));
     }
 }
