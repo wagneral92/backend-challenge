@@ -9,8 +9,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Data
-@Setter
-@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderItemDTO implements Serializable {

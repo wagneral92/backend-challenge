@@ -1,9 +1,9 @@
 package com.acme.orderserver.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -11,8 +11,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 
@@ -32,6 +30,7 @@ public class Order implements Serializable {
     @Size(min = 2, max = 255)
     private String address;
 
+    @JsonFormat(pattern="yyyy-MM-dd")
     @Column(name = "confirmation_date")
     private LocalDateTime confirmationDate;
 

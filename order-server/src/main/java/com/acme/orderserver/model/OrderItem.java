@@ -9,8 +9,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Data
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 
@@ -39,7 +37,5 @@ public class OrderItem implements Serializable {
 
     public enum Status {
         CREATED, REFUNDED, PAY
-
-
     }
 }

@@ -8,8 +8,6 @@ import java.io.Serializable;
 import java.util.List;
 
 @Data
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderDTO implements Serializable {
