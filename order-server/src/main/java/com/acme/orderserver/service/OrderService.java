@@ -5,9 +5,7 @@ import com.acme.orderserver.event.QueueSenderEvent;
 import com.acme.orderserver.exception.StoreNotFoundException;
 import com.acme.orderserver.model.Order;
 import com.acme.orderserver.model.OrderItem;
-import com.acme.orderserver.queue.model.FinalizeOrderCommand;
-import com.acme.orderserver.queue.model.FinalizePaymentCommand;
-import com.acme.orderserver.queue.model.RevertPaymentCommand;
+import com.acme.orderserver.queue.model.*;
 import com.acme.orderserver.repository.OrderItemRepository;
 import com.acme.orderserver.repository.OrderRepository;
 import com.acme.orderserver.service.contracts.IOrderService;
@@ -51,6 +49,7 @@ public class OrderService implements IOrderService {
      * @return
      */
     @Override
+    @Transactional
     public Order create(final Order order) {
 
         Store store = this.getStoreById(order.getStoreId());
@@ -67,6 +66,7 @@ public class OrderService implements IOrderService {
      * @return
      */
     @Override
+    @Transactional
     public Order update(final Order order, final Long id) {
         Optional<Order> orderOptional = this.repository.findById(id);
 
@@ -149,6 +149,62 @@ public class OrderService implements IOrderService {
 
 
     }
+
+    /**
+     *
+     * @param command
+     */
+    @Override
+    public void refundOrder(final RefundOrderCommand command) {
+        Optional<Order> optionalOrder = this.repository.findById(command.getOrderId());
+
+        if (optionalOrder.isPresent()) {
+            try {
+
+                this.processRefund(command, optionalOrder.get());
+
+            } catch (Exception e) {
+                this.publisher.publishEvent(
+                        new QueueSenderEvent(
+                                this,
+                                RevertRefundPaymentCommand.builder()
+                                        .orderId(command.getOrderId())
+                                        .paymentId(command.getPaymentId())
+                                        .build(),
+                                RabbitConfig.REVERT_REFUND
+                        )
+                );
+            }
+
+
+        }
+    }
+
+    /**
+     *
+     * @param command
+     * @param order
+     */
+    private void processRefund(final RefundOrderCommand command, final Order order) {
+
+        if (command.getItems().size() > 0) {
+
+            for (Long item : command.getItems()) {
+                Optional<OrderItem> optionalOrderItem = order.getItems().stream().filter(i -> i.getId() == item).findFirst();
+
+                if (optionalOrderItem.isPresent()) {
+                    optionalOrderItem.get().setStatus(OrderItem.Status.REFUNDED);
+                }
+            }
+
+        } else {
+            order.setStatus(Order.Status.REFUNDED);
+            order.getItems().stream().forEach(item -> item.setStatus(OrderItem.Status.REFUNDED));
+        }
+
+        this.repository.save(order);
+    }
+
 
     /**
      * @param id

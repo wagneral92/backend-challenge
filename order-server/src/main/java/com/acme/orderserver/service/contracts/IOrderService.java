@@ -2,6 +2,7 @@ package com.acme.orderserver.service.contracts;
 
 import com.acme.orderserver.model.Order;
 import com.acme.orderserver.queue.model.FinalizeOrderCommand;
+import com.acme.orderserver.queue.model.RefundOrderCommand;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -18,4 +19,6 @@ public interface IOrderService {
     Page<Order> findAll(final Pageable pageable);
 
     void finalizeOrder(final FinalizeOrderCommand command);
+
+    void refundOrder(final RefundOrderCommand command);
 }

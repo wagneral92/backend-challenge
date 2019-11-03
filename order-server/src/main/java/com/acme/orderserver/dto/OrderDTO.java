@@ -14,6 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 public class OrderDTO implements Serializable {
 
+    private Long id;
+
     @NotNull
     private Long storeId;
 

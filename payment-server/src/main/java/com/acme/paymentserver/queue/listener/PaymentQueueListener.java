@@ -3,8 +3,10 @@ package com.acme.paymentserver.queue.listener;
 import com.acme.paymentserver.config.queue.RabbitConfig;
 import com.acme.paymentserver.event.FinalizePaymentEvent;
 import com.acme.paymentserver.event.RevertPaymentEvent;
+import com.acme.paymentserver.event.RevertRefundPaymentEvent;
 import com.acme.paymentserver.queue.model.FinalizePaymentCommand;
 import com.acme.paymentserver.queue.model.RevertPaymentCommand;
+import com.acme.paymentserver.queue.model.RevertRefundPaymentCommand;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -28,11 +30,20 @@ public class PaymentQueueListener {
 
     @RabbitListener(queues = RabbitConfig.REVERT_PAYMENT)
     public void processRevertPayment(final RevertPaymentCommand revertPaymentCommand) {
-        System.out.println(revertPaymentCommand.getPaymentId());
         this.publisher.publishEvent(
                 new RevertPaymentEvent(
                         this,
                         revertPaymentCommand
+                )
+        );
+    }
+
+    @RabbitListener(queues = RabbitConfig.REVERT_REFUND)
+    public void revertRefund(final RevertRefundPaymentCommand revertRefundPaymentCommand) {
+        this.publisher.publishEvent(
+                new RevertRefundPaymentEvent(
+                        this,
+                        revertRefundPaymentCommand
                 )
         );
     }
