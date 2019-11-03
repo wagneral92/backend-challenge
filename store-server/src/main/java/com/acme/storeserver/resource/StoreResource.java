@@ -19,6 +19,11 @@ public class StoreResource {
     private final StoreService service;
     private final ModelMapper modelMapper;
 
+    /**
+     *
+     * @param service
+     * @param modelMapper
+     */
     public StoreResource(StoreService service, ModelMapper modelMapper) {
         this.service = service;
         this.modelMapper = modelMapper;
