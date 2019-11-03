@@ -3,8 +3,7 @@ package com.acme.paymentserver.queue.model;
 import lombok.*;
 
 @Builder
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString

@@ -170,9 +170,14 @@ public class PaymentService implements IPaymentService {
         return order;
     }
 
+    /**
+     *
+     * @param refundDTO
+     * @param payments
+     */
     private void validRefund(final RefundDTO refundDTO, final List<Payment> payments) {
 
-        Order order = this.orderService.getOrderById(refundDTO.getOrderId());
+        Order order = this.getOrderById(refundDTO.getOrderId());
 
         if (payments.size() <= 0) {
             throw new PaymentNotFoundException();
