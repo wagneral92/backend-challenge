@@ -1,18 +1,18 @@
 package com.acme.paymentserver.service;
 
 import com.acme.paymentserver.config.queue.RabbitConfig;
+import com.acme.paymentserver.dto.RefundDTO;
 import com.acme.paymentserver.dto.ResponseMessageDTO;
 import com.acme.paymentserver.event.QueueSenderEvent;
-import com.acme.paymentserver.exception.OrderNotFoundException;
+import com.acme.paymentserver.exception.*;
 import com.acme.paymentserver.model.Payment;
-import com.acme.paymentserver.queue.model.FinalizeOrderCommand;
-import com.acme.paymentserver.queue.model.FinalizePaymentCommand;
-import com.acme.paymentserver.queue.model.RevertPaymentCommand;
+import com.acme.paymentserver.queue.model.*;
 import com.acme.paymentserver.repository.PaymentRepository;
 import com.acme.paymentserver.service.contracts.IPaymentService;
 import com.acme.paymentserver.serviceAgents.OrderService;
 import com.acme.paymentserver.serviceAgents.model.Order;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -31,6 +31,9 @@ public class PaymentService implements IPaymentService {
     private final PaymentRepository repository;
     private final ApplicationEventPublisher publisher;
     private final MessageSource messageSource;
+
+    @Value("${app.days-for-refund}")
+    private Long daysForRefund;
 
     /**
      * @param orderService
@@ -55,36 +58,64 @@ public class PaymentService implements IPaymentService {
 
         List<Payment> payments = this.repository.findByOrderId(payment.getOrderId());
 
-        if (payments.size() <= 0) {
-
-            Order order = this.getOrderById(payment.getOrderId());
-
-            payment.setDate(LocalDateTime.now());
-            payment.setStatus(Payment.Status.PROCESSING);
-            repository.save(payment);
-
-            publisher.publishEvent(new QueueSenderEvent(
-                    this,
-                    FinalizeOrderCommand.builder()
-                            .paymentId(payment.getId())
-                            .orderId(payment.getOrderId())
-                            .build(),
-                    RabbitConfig.FINALIZE_ORDER
-            ));
-
-            return ResponseMessageDTO.builder().message(this.messageSource.getMessage("payment.created", null, LocaleContextHolder.getLocale())).build();
-
+        if (payments.size() > 0) {
+            throw new PaymentExistsException();
         }
 
-        return ResponseMessageDTO.builder().message(this.messageSource.getMessage("payment.exists", null, LocaleContextHolder.getLocale())).build();
+        Order order = this.getOrderById(payment.getOrderId());
+
+        payment.setDate(LocalDateTime.now());
+        payment.setStatus(Payment.Status.PROCESSING);
+        repository.save(payment);
+
+        publisher.publishEvent(new QueueSenderEvent(
+                this,
+                FinalizeOrderCommand.builder()
+                        .paymentId(payment.getId())
+                        .orderId(payment.getOrderId())
+                        .build(),
+                RabbitConfig.FINALIZE_ORDER
+        ));
+
+        return ResponseMessageDTO.builder().message(this.messageSource.getMessage("payment.created", null, LocaleContextHolder.getLocale())).build();
     }
 
     /**
-     *
+     * @param refundDTO
+     * @return
+     */
+    @Override
+    public ResponseMessageDTO refund(final RefundDTO refundDTO) {
+        List<Payment> payments = this.repository.findByOrderId(refundDTO.getOrderId());
+
+        this.validRefund(refundDTO, payments);
+
+        Payment payment = payments.get(0);
+        if (refundDTO.getItems().size() <= 0) {
+            payment.setStatus(Payment.Status.REFUNDED);
+            this.repository.save(payment);
+        }
+
+        this.publisher.publishEvent(
+                new QueueSenderEvent(
+                        this,
+                        RefundOrderCommand.builder()
+                                .items(refundDTO.getItems())
+                                .paymentId(payment.getId())
+                                .orderId(refundDTO.getOrderId())
+                                .build(),
+                        RabbitConfig.REFUND_ORDER
+                )
+        );
+
+        return ResponseMessageDTO.builder().message(this.messageSource.getMessage("payment.order.created-refund", null, LocaleContextHolder.getLocale())).build();
+    }
+
+    /**
      * @param finalizePaymentCommand
      */
     @Override
-    public void FinalizePayment(FinalizePaymentCommand finalizePaymentCommand) {
+    public void FinalizePayment(final FinalizePaymentCommand finalizePaymentCommand) {
         Optional<Payment> optionalPayment = this.repository.findById(finalizePaymentCommand.getPaymentId());
 
         if (optionalPayment.isPresent()) {
@@ -96,11 +127,10 @@ public class PaymentService implements IPaymentService {
     }
 
     /**
-     *
      * @param revertPaymentCommand
      */
     @Override
-    public void revertPayment(RevertPaymentCommand revertPaymentCommand) {
+    public void revertPayment(final RevertPaymentCommand revertPaymentCommand) {
         Optional<Payment> optionalPayment = this.repository.findById(revertPaymentCommand.getPaymentId());
 
         if (optionalPayment.isPresent()) {
@@ -112,10 +142,25 @@ public class PaymentService implements IPaymentService {
     }
 
     /**
+     * @param revertRefundPaymentCommand
+     */
+    @Override
+    public void revertRefundPayment(final RevertRefundPaymentCommand revertRefundPaymentCommand) {
+        Optional<Payment> optionalPayment = this.repository.findById(revertRefundPaymentCommand.getPaymentId());
+
+        if (optionalPayment.isPresent()) {
+            Payment paymentBase = optionalPayment.get();
+
+            paymentBase.setStatus(Payment.Status.COMPLETED);
+            this.repository.save(paymentBase);
+        }
+    }
+
+    /**
      * @param id
      * @return
      */
-    private Order getOrderById(Long id) {
+    private Order getOrderById(final Long id){
         Order order = this.orderService.getOrderById(id);
 
         if (isNull(order)) {
@@ -123,5 +168,38 @@ public class PaymentService implements IPaymentService {
         }
 
         return order;
+    }
+
+    private void validRefund(final RefundDTO refundDTO, final List<Payment> payments) {
+
+        Order order = this.orderService.getOrderById(refundDTO.getOrderId());
+
+        if (payments.size() <= 0) {
+            throw new PaymentNotFoundException();
+        }
+
+        if (payments.get(0).getStatus() != Payment.Status.COMPLETED) {
+            throw new PaymentNotCompletedException();
+        }
+
+        if (!this.validItemsRefund(refundDTO, order)) {
+            throw new OrderNotFoundException();
+        }
+
+        if (order.getConfirmationDate().plusDays(this.daysForRefund).compareTo(LocalDateTime.now()) <= 0) {
+            throw new DateLimitRefundReachException();
+        }
+    }
+
+    private Boolean validItemsRefund(final RefundDTO refundDTO, final Order order) {
+
+        for (Long item : refundDTO.getItems()) {
+            if (order.getItems().stream().filter(i -> i.getId() == item).count() <= 0) {
+                return false;
+            }
+        }
+
+        return true;
+
     }
 }

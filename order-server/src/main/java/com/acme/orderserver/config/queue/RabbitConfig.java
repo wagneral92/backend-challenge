@@ -14,20 +14,32 @@ public class RabbitConfig {
     public static final String FINALIZE_ORDER = "finalize-order";
     public static final String FINALIZE_PAYMENT = "finalize-payment";
     public static final String REVERT_PAYMENT = "revert-payment";
+    public static final String REFUND_ORDER = "refund-order";
+    public static final String REVERT_REFUND = "revert-refund";
 
     @Bean
-    Queue finalizePaymentQueue(){
+    Queue finalizePaymentQueue() {
         return QueueBuilder.durable(FINALIZE_PAYMENT).build();
     }
 
     @Bean
-    Queue revertPaymentQueue(){
+    Queue revertPaymentQueue() {
         return QueueBuilder.durable(REVERT_PAYMENT).build();
     }
 
     @Bean
-    Queue finalizeOrderQueue(){
+    Queue finalizeOrderQueue() {
         return QueueBuilder.durable(FINALIZE_ORDER).build();
+    }
+
+    @Bean
+    Queue refundOrderQueue() {
+        return QueueBuilder.durable(REFUND_ORDER).build();
+    }
+
+    @Bean
+    Queue revertRefundQueue() {
+        return QueueBuilder.durable(REVERT_REFUND).build();
     }
 
     @Bean
