@@ -16,7 +16,7 @@ public interface IOrderService {
 
     Optional<Order> findById(final Long id);
 
-    Page<Order> findAll(final Pageable pageable);
+    Page<Order> findAll(final Pageable pageable, String search);
 
     void finalizeOrder(final FinalizeOrderCommand command);
 

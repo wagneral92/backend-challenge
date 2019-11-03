@@ -85,8 +85,9 @@ public class OrderResource {
      */
     @GetMapping
     public ResponseEntity<Page<Order>> getAll(@RequestParam(value = "page", required = false, defaultValue = "0") final int page,
-                                              @RequestParam(value = "size", required = false, defaultValue = "10") final int size) {
-        return ResponseEntity.ok(this.service.findAll(PageRequest.of(page, size)));
+                                              @RequestParam(value = "size", required = false, defaultValue = "10") final int size,
+                                              @RequestParam(value = "search", required = false, defaultValue = "") final String search) {
+        return ResponseEntity.ok(this.service.findAll(PageRequest.of(page, size), search));
     }
 
     @ExceptionHandler({StoreNotFoundException.class})

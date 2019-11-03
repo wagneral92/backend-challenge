@@ -101,8 +101,8 @@ public class OrderService implements IOrderService {
      * @return
      */
     @Override
-    public Page<Order> findAll(final Pageable pageable) {
-        return this.repository.findAll(pageable);
+    public Page<Order> findAll(final Pageable pageable, String search) {
+        return this.repository.findAllSearch(pageable, search);
     }
 
     /**
