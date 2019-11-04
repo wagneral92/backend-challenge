@@ -42,7 +42,7 @@ public class OrderServiceTest {
     private Order order;
 
     public OrderServiceTest() {
-        List<OrderItem> items = new ArrayList<>();
+        final List<OrderItem> items = new ArrayList<>();
         this.order = new Order(null, 1L, "address", LocalDateTime.now(), Order.Status.CREATED, items);
     }
 
@@ -54,15 +54,15 @@ public class OrderServiceTest {
 
     @Test
     public void createOrderSuccess(){
-        Store store = new Store(1L, "loja 01", "address loja 01");
+        final Store store = new Store(1L, "loja 01", "address loja 01");
 
-        List<OrderItem> items = new ArrayList<>();
-        Order orderResponse = new Order(1L, 1L, "address", LocalDateTime.now(), Order.Status.CREATED, items);
+        final List<OrderItem> items = new ArrayList<>();
+        final Order orderResponse = new Order(1L, 1L, "address", LocalDateTime.now(), Order.Status.CREATED, items);
 
         Mockito.when(storeService.getStoreById(1L)).thenReturn(store);
         Mockito.when(repository.save(this.order)).thenReturn(orderResponse);
 
-        Order orderCreated = this.service.create(order);
+        final Order orderCreated = this.service.create(order);
 
         Assertions.assertNotNull(orderCreated.getId());
     }
@@ -70,17 +70,17 @@ public class OrderServiceTest {
     @Test
     public void UpdateOrderSuccess(){
 
-        Store store = new Store(1L, "loja 01", "address loja 01");
+        final Store store = new Store(1L, "loja 01", "address loja 01");
 
-        List<OrderItem> items = new ArrayList<>();
-        Order orderResponse = new Order(1L, 1L, "address", LocalDateTime.now(), Order.Status.CREATED, items);
+        final List<OrderItem> items = new ArrayList<>();
+        final Order orderResponse = new Order(1L, 1L, "address", LocalDateTime.now(), Order.Status.CREATED, items);
 
-        Optional<Order> responseOrderOptional = Optional.of(orderResponse);
+        final  Optional<Order> responseOrderOptional = Optional.of(orderResponse);
         Mockito.lenient().when(this.repository.findById(1L)).thenReturn(responseOrderOptional);
         Mockito.when(storeService.getStoreById(1L)).thenReturn(store);
         Mockito.when(repository.save(responseOrderOptional.get())).thenReturn(responseOrderOptional.get());
 
-        Order orderUpdate = service.update(order, 1L);
+        final Order orderUpdate = service.update(order, 1L);
 
         Assertions.assertNotNull(orderUpdate.getId());
         Assertions.assertEquals(orderUpdate.getAddress(), "address");
@@ -88,11 +88,11 @@ public class OrderServiceTest {
 
     @Test
     public void getOrderById() {
-        List<OrderItem> items = new ArrayList<>();
-        Optional<Order> responseOrder = Optional.of(new Order(null, 1L, "address", LocalDateTime.now(), Order.Status.CREATED, items));
+        final List<OrderItem> items = new ArrayList<>();
+        final Optional<Order> responseOrder = Optional.of(new Order(null, 1L, "address", LocalDateTime.now(), Order.Status.CREATED, items));
         Mockito.lenient().when(repository.findById(1L)).thenReturn(responseOrder);
 
-        Optional<Order> order = service.findById(1L);
+        final Optional<Order> order = service.findById(1L);
 
         Assertions.assertTrue(order.isPresent());
 
