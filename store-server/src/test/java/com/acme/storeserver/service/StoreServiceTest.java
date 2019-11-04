@@ -15,7 +15,6 @@ import java.util.Optional;
 
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Spring boot 2 mockito2 Junit5 example")
 public class StoreServiceTest {
 
     @Mock
