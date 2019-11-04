@@ -30,7 +30,7 @@ public class StoreServiceTest {
     }
 
     @Test
-    public void createStore() {
+    public void createStoreSuccess() {
         Store responseStore = new Store(1L, "loja 01", "address 01");
 
         Mockito.lenient().when(service.create(this.store)).thenReturn(responseStore);
@@ -40,7 +40,28 @@ public class StoreServiceTest {
     }
 
     @Test
-    public void getStoreById() {
+    public void updateStoreSuccess(){
+        Store responseStore = new Store(1L, "loja 01", "address 01");
+
+        Optional<Store> optionalStore = Optional.of(new Store(1L, "loja 01", "address 01"));
+
+        Mockito.lenient().when(this.repository.findById(1L)).thenReturn(optionalStore);
+        Mockito.lenient().when(service.create(this.store)).thenReturn(responseStore);
+        Assertions.assertNotNull(responseStore.getId());
+        Assertions.assertEquals(responseStore.getName(), "loja 01");
+        Assertions.assertEquals(responseStore.getAddress(), "address 01");
+    }
+
+    @Test
+    public void updateStoreNotPresent(){
+        Store responseStore = new Store(1L, "loja 01", "address 01");
+
+        Mockito.lenient().when(service.create(this.store)).thenReturn(responseStore);
+        Assertions.assertNotNull(responseStore);
+    }
+
+    @Test
+    public void getStoreByIdIsPresent() {
         Optional<Store> responseStore = Optional.of(new Store(1L, "loja 01", "teste 01"));
         Mockito.lenient().when(service.findById(1L)).thenReturn(responseStore);
         Assertions.assertTrue(responseStore.isPresent());
