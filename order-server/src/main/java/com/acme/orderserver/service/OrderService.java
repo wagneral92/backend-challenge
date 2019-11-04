@@ -45,6 +45,7 @@ public class OrderService implements IOrderService {
     }
 
     /**
+     * Registrar uma Ordem
      * @param order
      * @return
      */
@@ -61,6 +62,7 @@ public class OrderService implements IOrderService {
     }
 
     /**
+     * Alterar uma ordem criada
      * @param order
      * @param id
      * @return
@@ -88,6 +90,7 @@ public class OrderService implements IOrderService {
     }
 
     /**
+     * Lista ordem pelo seu id
      * @param id
      * @return
      */
@@ -97,6 +100,7 @@ public class OrderService implements IOrderService {
     }
 
     /**
+     * lista ordem paginada e com a aplicação do filtro search
      * @param pageable
      * @return
      */
@@ -106,6 +110,9 @@ public class OrderService implements IOrderService {
     }
 
     /**
+     * Finaliza uma ordem de pagamento a partir do comando recebido
+     * do serviço de pagamento. Returna para a fila de sucesso ou
+     * erro de acordo com o seu processamento, erro ou sucesso.
      * @param command
      */
     @Override
@@ -151,7 +158,9 @@ public class OrderService implements IOrderService {
     }
 
     /**
-     *
+     * Muda o status da ordem ou item para reenbolso
+     * de acordo com o comando recebido. Publica na fila de
+     * retorno de acordo com o seu processamento, erro ou sucesso.
      * @param command
      */
     @Override
@@ -181,7 +190,7 @@ public class OrderService implements IOrderService {
     }
 
     /**
-     *
+     * Aplica as regas de negócio para o reembolso do predido.
      * @param command
      * @param order
      */
@@ -207,6 +216,7 @@ public class OrderService implements IOrderService {
 
 
     /**
+     * Recupera a loja pelo seu id
      * @param id
      * @return
      */

@@ -90,6 +90,11 @@ public class OrderResource {
         return ResponseEntity.ok(this.service.findAll(PageRequest.of(page, size), search));
     }
 
+    /**
+     *
+     * @param ex
+     * @return
+     */
     @ExceptionHandler({StoreNotFoundException.class})
     public ResponseEntity<ResponseErrorDTO> handleStoreNotFoundException(final StoreNotFoundException ex) {
         return ResponseEntity.badRequest().body(ResponseErrorDTO.builder().errors(Arrays.asList(this.messageSource.getMessage("order.store-not-found", null, LocaleContextHolder.getLocale()))).build());
