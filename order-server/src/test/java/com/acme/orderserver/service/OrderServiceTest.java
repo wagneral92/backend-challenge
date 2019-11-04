@@ -1,5 +1,6 @@
 package com.acme.orderserver.service;
 
+import com.acme.orderserver.exception.StoreNotFoundException;
 import com.acme.orderserver.model.Order;
 import com.acme.orderserver.model.OrderItem;
 import com.acme.orderserver.repository.OrderItemRepository;
@@ -39,15 +40,24 @@ public class OrderServiceTest {
 
     private Order order;
 
-    public OrderServiceTest(){
+    public OrderServiceTest() {
         List<OrderItem> items = new ArrayList<>();
-        this.order = new Order(null, 1L ,"address", LocalDateTime.now(),Order.Status.CREATED, items);
+        this.order = new Order(null, 1L, "address", LocalDateTime.now(), Order.Status.CREATED, items);
     }
 
     @Test
-    public void getOrderById(){
+    public void createOrderStoreNotFoundException() {
         List<OrderItem> items = new ArrayList<>();
-        Optional<Order> responseStore = Optional.of(new Order(null, 1L ,"address", LocalDateTime.now(),Order.Status.CREATED, items));
+        Order responseStore = new Order(null, 1L, "address", LocalDateTime.now(), Order.Status.CREATED, items);
+        Assertions.assertThrows(StoreNotFoundException.class, () -> {
+            Mockito.lenient().when(service.create(this.order)).thenReturn(responseStore);
+        });
+    }
+
+    @Test
+    public void getOrderById() {
+        List<OrderItem> items = new ArrayList<>();
+        Optional<Order> responseStore = Optional.of(new Order(null, 1L, "address", LocalDateTime.now(), Order.Status.CREATED, items));
         Mockito.lenient().when(service.findById(1L)).thenReturn(responseStore);
         Assertions.assertTrue(responseStore.isPresent());
 
