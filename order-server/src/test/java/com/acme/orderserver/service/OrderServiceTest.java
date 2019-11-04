@@ -6,6 +6,7 @@ import com.acme.orderserver.model.OrderItem;
 import com.acme.orderserver.repository.OrderItemRepository;
 import com.acme.orderserver.repository.OrderRepository;
 import com.acme.orderserver.serviceAgents.StoreService;
+import com.acme.orderserver.serviceAgents.model.Store;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -52,6 +53,20 @@ public class OrderServiceTest {
         Assertions.assertThrows(StoreNotFoundException.class, () -> {
             Mockito.lenient().when(service.create(this.order)).thenReturn(responseStore);
         });
+    }
+
+    @Test
+    public void createOrderSuccess(){
+        Store store = new Store(1L, "loja 01", "address loja 01");
+        Mockito.doReturn(store).when(this.storeService).getStoreById(1L);
+
+        List<OrderItem> items = new ArrayList<>();
+        Order responseStore = new Order(1L, 1L, "address", LocalDateTime.now(), Order.Status.CREATED, items);
+
+        Mockito.lenient().when(this.service.getStoreById(1L)).thenReturn(store);
+        Mockito.lenient().when(this.service.create(order)).thenReturn(responseStore);
+
+        Assertions.assertNotNull(responseStore.getId());
     }
 
     @Test
