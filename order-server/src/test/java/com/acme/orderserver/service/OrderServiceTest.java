@@ -8,12 +8,12 @@ import com.acme.orderserver.repository.OrderRepository;
 import com.acme.orderserver.serviceAgents.StoreService;
 import com.acme.orderserver.serviceAgents.model.Store;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.context.ApplicationEventPublisher;
 
 import java.time.LocalDateTime;
@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@ExtendWith(MockitoExtension.class)
+@RunWith(MockitoJUnitRunner.class)
 public class OrderServiceTest {
 
     @Mock
@@ -46,52 +46,55 @@ public class OrderServiceTest {
         this.order = new Order(null, 1L, "address", LocalDateTime.now(), Order.Status.CREATED, items);
     }
 
-    @Test
-    public void createOrderStoreNotFoundException() {
-        List<OrderItem> items = new ArrayList<>();
-        Order responseStore = new Order(null, 1L, "address", LocalDateTime.now(), Order.Status.CREATED, items);
-        Assertions.assertThrows(StoreNotFoundException.class, () -> {
-            Mockito.lenient().when(service.create(this.order)).thenReturn(responseStore);
-        });
+    @Test(expected = StoreNotFoundException.class)
+    public void storeNotFoundWhenCreatedOrder() {
+        Mockito.when(storeService.getStoreById(1L)).thenReturn(null);
+        service.create(this.order);
     }
 
     @Test
     public void createOrderSuccess(){
         Store store = new Store(1L, "loja 01", "address loja 01");
-        Mockito.doReturn(store).when(this.storeService).getStoreById(1L);
 
         List<OrderItem> items = new ArrayList<>();
-        Order responseStore = new Order(1L, 1L, "address", LocalDateTime.now(), Order.Status.CREATED, items);
+        Order orderResponse = new Order(1L, 1L, "address", LocalDateTime.now(), Order.Status.CREATED, items);
 
-        Mockito.lenient().when(this.service.getStoreById(1L)).thenReturn(store);
-        Mockito.lenient().when(this.service.create(order)).thenReturn(responseStore);
+        Mockito.when(storeService.getStoreById(1L)).thenReturn(store);
+        Mockito.when(repository.save(this.order)).thenReturn(orderResponse);
 
-        Assertions.assertNotNull(responseStore.getId());
+        Order orderCreated = this.service.create(order);
+
+        Assertions.assertNotNull(orderCreated.getId());
     }
 
     @Test
     public void UpdateOrderSuccess(){
+
         Store store = new Store(1L, "loja 01", "address loja 01");
-        Mockito.doReturn(store).when(this.storeService).getStoreById(1L);
 
         List<OrderItem> items = new ArrayList<>();
-        Order responseStore = new Order(1L, 1L, "address 01", LocalDateTime.now(), Order.Status.CREATED, items);
+        Order orderResponse = new Order(1L, 1L, "address", LocalDateTime.now(), Order.Status.CREATED, items);
 
-        Optional<Order> responseStoreOptional = Optional.of(new Order(null, 1L, "address", LocalDateTime.now(), Order.Status.CREATED, items));
+        Optional<Order> responseOrderOptional = Optional.of(orderResponse);
+        Mockito.lenient().when(this.repository.findById(1L)).thenReturn(responseOrderOptional);
+        Mockito.when(storeService.getStoreById(1L)).thenReturn(store);
+        Mockito.when(repository.save(responseOrderOptional.get())).thenReturn(responseOrderOptional.get());
 
-        Mockito.lenient().when(this.repository.findById(1L)).thenReturn(responseStoreOptional);
-        Mockito.lenient().when(this.service.getStoreById(1L)).thenReturn(store);
-        Mockito.lenient().when(this.service.update(order, 1L)).thenReturn(responseStore);
+        Order orderUpdate = service.update(order, 1L);
 
-        Assertions.assertNotNull(responseStore.getId());
+        Assertions.assertNotNull(orderUpdate.getId());
+        Assertions.assertEquals(orderUpdate.getAddress(), "address");
     }
 
     @Test
     public void getOrderById() {
         List<OrderItem> items = new ArrayList<>();
-        Optional<Order> responseStore = Optional.of(new Order(null, 1L, "address", LocalDateTime.now(), Order.Status.CREATED, items));
-        Mockito.lenient().when(service.findById(1L)).thenReturn(responseStore);
-        Assertions.assertTrue(responseStore.isPresent());
+        Optional<Order> responseOrder = Optional.of(new Order(null, 1L, "address", LocalDateTime.now(), Order.Status.CREATED, items));
+        Mockito.lenient().when(repository.findById(1L)).thenReturn(responseOrder);
+
+        Optional<Order> order = service.findById(1L);
+
+        Assertions.assertTrue(order.isPresent());
 
     }
 
