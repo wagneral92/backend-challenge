@@ -28,6 +28,7 @@ public class StoreService implements IStoreService {
      *
      * @param store
      * @return
+     * Cadastrar de Lojas
      */
     @Override
     public Store create(final Store store) {
@@ -38,6 +39,7 @@ public class StoreService implements IStoreService {
      *
      * @param store
      * @param id
+     * Editar uma lojas
      * @return
      */
     @Override
@@ -57,7 +59,7 @@ public class StoreService implements IStoreService {
     }
 
     /**
-     *
+     *Recuperar uma loja por id
      * @param id
      * @return
      */
@@ -67,8 +69,9 @@ public class StoreService implements IStoreService {
     }
 
     /**
-     *
+     * *Recuperar todas as lojas por paginadas e filtras pelo search
      * @param pageable
+     * @param search
      * @return
      */
     @Override
