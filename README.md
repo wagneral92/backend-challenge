@@ -19,4 +19,5 @@ Foram desenvolvidos 4 serviços, o service discovery com Eureka Service, serviç
 * Subir os serviços criados com o docker
 * Aumentar a cobertura dos teste unitários e implentar teste de integração
 * Implementar segurança com Spring Cloud OAuth2
+* Utilizar um serviço de bando de dados RDS da AWS.
 
