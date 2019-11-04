@@ -50,6 +50,8 @@ public class PaymentService implements IPaymentService {
     }
 
     /**
+     * Regista o o pagamento e public na para
+     * baixa do pedido
      * @param payment
      * @return
      */
@@ -81,6 +83,9 @@ public class PaymentService implements IPaymentService {
     }
 
     /**
+     * Alterar o status do pagamento para REFUNDED
+     * e public na fila para mudança do status do
+     * pedido.
      * @param refundDTO
      * @return
      */
@@ -112,6 +117,8 @@ public class PaymentService implements IPaymentService {
     }
 
     /**
+     * É chamado pelo listener da fila de pedidos
+     * baixados e finaliza o pagamento.
      * @param finalizePaymentCommand
      */
     @Override
@@ -127,6 +134,8 @@ public class PaymentService implements IPaymentService {
     }
 
     /**
+     * Faz o rollback do pagamento quanto
+     * ocorre algum problema na baixa do pedido
      * @param revertPaymentCommand
      */
     @Override
@@ -142,6 +151,8 @@ public class PaymentService implements IPaymentService {
     }
 
     /**
+     * Faz o rollback do pagamento quanto
+     * ocorre algum erro no reemboldo do pedido
      * @param revertRefundPaymentCommand
      */
     @Override
@@ -157,6 +168,8 @@ public class PaymentService implements IPaymentService {
     }
 
     /**
+     * Recupera o pedido pelo id
+     *
      * @param id
      * @return
      */
@@ -171,6 +184,8 @@ public class PaymentService implements IPaymentService {
     }
 
     /**
+     * Aplica as regas de negócio para as
+     * solicitações de reembolso
      *
      * @param refundDTO
      * @param payments
@@ -196,6 +211,12 @@ public class PaymentService implements IPaymentService {
         }
     }
 
+    /**
+     * Valida os itens para remboldo
+     * @param refundDTO
+     * @param order
+     * @return
+     */
     private Boolean validItemsRefund(final RefundDTO refundDTO, final Order order) {
 
         for (Long item : refundDTO.getItems()) {
