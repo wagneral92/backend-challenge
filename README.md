@@ -17,6 +17,6 @@ Foram criados 4 serviços o service discovery com Eureka Service, serviço de lo
 
 ## O que gostaria de melhorar?
 * Subir os serviços criados com o docker
-* Melhorar os teste unitários e implentar teste de integração
+* Aumentar a cobertura dos teste unitários e implentar teste de integração
 * Implementar segurança com Spring Cloud OAuth2
 
