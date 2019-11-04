@@ -210,7 +210,7 @@ public class OrderService implements IOrderService {
      * @param id
      * @return
      */
-    private Store getStoreById(final Long id) {
+    public Store getStoreById(final Long id) {
         Store store = this.storeService.getStoreById(id);
 
         if (isNull(store)) {
