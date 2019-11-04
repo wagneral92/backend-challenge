@@ -42,8 +42,8 @@ public class StoreServiceTest {
 
     @Test
     public void getStoreById() {
-        Store responseStore = new Store(1L, "loja 01", "teste 01");
-        Mockito.lenient().when(service.findById(1L)).thenReturn(Optional.of(responseStore));
-        Assertions.assertEquals(store.getName(), "teste 01");
+        Optional<Store> responseStore = Optional.of(new Store(1L, "loja 01", "teste 01"));
+        Mockito.lenient().when(service.findById(1L)).thenReturn(responseStore);
+        Assertions.assertTrue(responseStore.isPresent());
     }
 }
